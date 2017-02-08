@@ -7,3 +7,7 @@ steps:
 
 images: ['gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA',
          'gcr.io/$PROJECT_ID/kubekins-test:1.6']
+
+options:
+    requested_verify_option: 'VERIFIED'
+    source_provenance_hash: ['SHA256']
