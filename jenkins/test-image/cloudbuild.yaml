@@ -4,16 +4,8 @@ steps:
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA', '-f=Dockerfile-1.6', '.']
   id: 'build-1.6'
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.6']
-#  waitFor: ['build-1.6']
-- name: 'gcr.io/cloud-builders/docker'
   dir: 'jenkins/test-image'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA', '-f=Dockerfile-1.5', '.']
-  id: 'build-1.5'
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.5']
 
 images: ['gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.5',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.6']
+         'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA']
