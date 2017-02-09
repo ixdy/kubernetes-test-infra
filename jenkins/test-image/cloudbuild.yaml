@@ -23,9 +23,9 @@ steps:
   args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.6']
 #  waitFor: ['build-1.6']
 
-images: ['gcr.io/$PROJECT_ID/kubekins-test:1.4-$COMMIT_SHA',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.4',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA',
+images: ['gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA',
          'gcr.io/$PROJECT_ID/kubekins-test:1.5',
+         'gcr.io/$PROJECT_ID/kubekins-test:1.4-$COMMIT_SHA',
+         'gcr.io/$PROJECT_ID/kubekins-test:1.4',
          'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA',
          'gcr.io/$PROJECT_ID/kubekins-test:1.6']
