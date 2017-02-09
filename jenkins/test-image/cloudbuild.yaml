@@ -3,12 +3,22 @@ steps:
   dir: 'jenkins/test-image'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/kubekins-test:1.4-$COMMIT_SHA', '-f=Dockerfile-1.4', '.']
 - name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.4-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.4']
+- name: 'gcr.io/cloud-builders/docker'
   dir: 'jenkins/test-image'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA', '-f=Dockerfile-1.5', '.']
 - name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.5']
+- name: 'gcr.io/cloud-builders/docker'
   dir: 'jenkins/test-image'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA', '-f=Dockerfile-1.6', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA', 'gcr.io/$PROJECT_ID/kubekins-test:1.6']
 
 images: ['gcr.io/$PROJECT_ID/kubekins-test:1.4-$COMMIT_SHA',
          'gcr.io/$PROJECT_ID/kubekins-test:1.5-$COMMIT_SHA',
-         'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA']
+         'gcr.io/$PROJECT_ID/kubekins-test:1.6-$COMMIT_SHA',
+         'gcr.io/$PROJECT_ID/kubekins-test:1.4',
+         'gcr.io/$PROJECT_ID/kubekins-test:1.5',
+         'gcr.io/$PROJECT_ID/kubekins-test:1.6',
+         ]
