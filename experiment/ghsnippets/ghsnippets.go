@@ -59,7 +59,7 @@ func getPRDetails(client *github.Client, org, repo string, number int) (*prDetai
 	return &pd, nil
 }
 
-func issuesForMonth(ctx context.Context, client *github.Client, author string, year int, month time.Month) ([]*issueDetails, error) {
+func issuesForMonth(ctx context.Context, client *github.Client, author string, year int, month time.Month) ([]*issueDetails, int, int, error) {
 	startDate := time.Date(year, month, 1, 0, 0, 0, 0, time.Local)
 	endDate := startDate.AddDate(0, 1, -1)
 	query := fmt.Sprintf("author:\"%s\" created:%s..%s", author, startDate.Format("2006-01-02"), endDate.Format("2006-01-02"))
@@ -68,13 +68,15 @@ func issuesForMonth(ctx context.Context, client *github.Client, author string, y
 		Order: "asc",
 	}
 	var ids []*issueDetails
+	totalIssues := 0
+	totalPRs := 0
 	for {
 		issues, resp, err := client.Search.Issues(ctx, query, opts)
 		if _, ok := err.(*github.RateLimitError); ok {
 			log.Println("hit rate limit")
 		}
 		if err != nil {
-			return nil, err
+			return nil, -1, -1, err
 		}
 
 		for _, issue := range issues.Issues {
@@ -97,6 +99,7 @@ func issuesForMonth(ctx context.Context, client *github.Client, author string, y
 				State:       issue.GetState(),
 			}
 			if issue.IsPullRequest() {
+				totalPRs++
 				id.Type = "PR"
 				if pd, err := getPRDetails(client, id.Org, id.Repo, id.Number); err == nil {
 					id.PrDetails = pd
@@ -104,6 +107,8 @@ func issuesForMonth(ctx context.Context, client *github.Client, author string, y
 						id.State = "merged"
 					}
 				}
+			} else {
+				totalIssues++
 			}
 			ids = append(ids, &id)
 		}
@@ -112,7 +117,7 @@ func issuesForMonth(ctx context.Context, client *github.Client, author string, y
 		}
 		opts.Page = resp.NextPage
 	}
-	return ids, nil
+	return ids, totalIssues, totalPRs, nil
 }
 
 func main() {
@@ -138,13 +143,15 @@ func main() {
 		}
 	}
 
+	fmt.Printf("GitHub activity report for %s\n\n", *author)
 	month := startDate
 	for !month.After(endDate) && !month.After(time.Now()) {
 		fmt.Printf("%s\n==============\n", month.Format("January 2006"))
-		ids, err := issuesForMonth(context.Background(), client, *author, month.Year(), month.Month())
+		ids, totalIssues, totalPRs, err := issuesForMonth(context.Background(), client, *author, month.Year(), month.Month())
 		if err != nil {
 			log.Fatalf("encountered error: %v", err)
 		}
+		fmt.Printf("Created %d Issues and %d PRs\n\n", totalIssues, totalPRs)
 		for _, id := range ids {
 			fmt.Printf("[%s] %s (%s/%s#%d)\n", strings.Title(id.Type), id.Title, id.Org, id.Repo, id.Number)
 			fmt.Printf("  Created %s\n", id.CreatedDate.Format("2 Jan 2006"))
