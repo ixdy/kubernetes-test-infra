@@ -778,6 +778,23 @@ func TestSyncResources(t *testing.T) {
 			},
 		},
 		{
+			name: "change type of static resource",
+			currentRes: []common.Resource{
+				common.NewResource("res-1", "oldtype", "", "", startTime),
+			},
+			config: &common.BoskosConfig{
+				Resources: []common.ResourceEntry{
+					{
+						Type:  "newtype",
+						Names: []string{"res-1"},
+					},
+				},
+			},
+			expectedRes: []common.Resource{
+				common.NewResource("res-1", "newtype", common.Free, "", startTime),
+			},
+		},
+		{
 			name: "should not change anything",
 			currentRes: []common.Resource{
 				common.NewResource("res-1", "t", "", "", startTime),
